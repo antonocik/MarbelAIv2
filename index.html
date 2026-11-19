@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Marbel AI — Chat AI</title>
+<meta name="description" content="Marbel AI — ruang kerja AI untuk mengobrol, membuat gambar, dan membuat ilustrasi video." />
+<meta name="theme-color" content="#131314" media="(prefers-color-scheme: dark)" />
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%234285f4'/%3E%3Cstop offset='1' stop-color='%239b72cb'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='10' fill='url(%23g)'/%3E%3Cpath fill='%23fff' d='M16 5l2.3 6.9a2.4 2.4 0 0 0 1.5 1.5L26.7 16l-6.9 2.3a2.4 2.4 0 0 0-1.5 1.5L16 26.7l-2.3-6.9a2.4 2.4 0 0 0-1.5-1.5L5.3 16l6.9-2.3a2.4 2.4 0 0 0 1.5-1.5L16 5z'/%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="bg-scene" aria-hidden="true"></div>
+
+  <div class="layout">
+    <h1 class="sr-only">Marbel AI — chat dengan beragam model AI</h1>
+
+    <!-- ============ Sidebar: brand + percakapan ============ -->
+    <aside class="sidebar" id="sidebar" aria-label="Riwayat percakapan">
+      <div class="sidebar-head">
+        <div class="brand-mark">
+          <svg class="brand-ico" viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-label="Logo Marbel AI">
+            <path d="M12 2.5l1.7 5.1a2.2 2.2 0 0 0 1.4 1.4l5.1 1.7-5.1 1.7a2.2 2.2 0 0 0-1.4 1.4L12 18.9l-1.7-5.1a2.2 2.2 0 0 0-1.4-1.4L3.8 10.7l5.1-1.7a2.2 2.2 0 0 0 1.4-1.4L12 2.5z"/>
+            <circle cx="19" cy="19" r="2.1"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <span class="brand-name">Marbel<span class="brand-high">AI</span></span>
+          <span class="brand-tag">v2.1</span>
+        </div>
+        <button class="theme-toggle" id="themeToggle" type="button" title="Ganti tema" aria-label="Ganti tema" aria-pressed="true">
+          <svg class="icon-sun" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="4"/>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7.5 7.5 0 0 0 9.8 9.8z"/>
+          </svg>
+        </button>
+        <button class="panel-hide" id="settingsBtn" type="button" title="Pengaturan" aria-label="Buka pengaturan">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1 1 0 0 0 .2 1.1l.1.1a2 2 0 0 1-2.8 2.8l-.1-.1a1 1 0 0 0-1.1-.2 1 1 0 0 0-.6.9V20a2 2 0 0 1-4 0v-.2a1 1 0 0 0-.7-.9 1 1 0 0 0-1.1.2l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1 1 0 0 0 .2-1.1 1 1 0 0 0-.9-.6H4a2 2 0 0 1 0-4h.2a1 1 0 0 0 .9-.7 1 1 0 0 0-.2-1.1l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1 1 0 0 0 1.1.2h.1a1 1 0 0 0 .6-.9V4a2 2 0 0 1 4 0v.2a1 1 0 0 0 .6.9 1 1 0 0 0 1.1-.2l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1 1 0 0 0-.2 1.1v.1a1 1 0 0 0 .9.6H20a2 2 0 0 1 0 4h-.2a1 1 0 0 0-.9.6z"></path>
+          </svg>
+        </button>
+        <button class="panel-hide" id="panelHide" type="button" title="Tutup riwayat" aria-label="Tutup riwayat" aria-expanded="true" aria-controls="sidebar">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 6l-6 6 6 6"/>
+          </svg>
+        </button>
+      </div>
+
+      <button class="new-thread" id="newThread" type="button" title="Mulai percakapan baru">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        <span>Percakapan Baru</span>
+      </button>
+
+      <nav class="conv-bar" aria-label="Percakapan">
+        <span class="conv-label">Terbaru</span>
+        <ul id="threadList" class="thread-list"></ul>
+      </nav>
+
+      <div class="sidebar-foot">
+        <span>Marbel AI</span>
+        <span class="foot-dot" aria-hidden="true"></span>
+        <span>Privacy Mode</span>
+      </div>
+    </aside>
+
+    <!-- ============ Kolom utama ============ -->
+    <main class="main">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="side-btn" id="sideToggle" type="button" title="Buka riwayat" aria-label="Buka riwayat" aria-expanded="false" aria-controls="sidebar">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+          </button>
+          <span class="topbar-title">MarbelAI</span>
+        </div>
+        <div class="topbar-right">
+          <div class="status-row" role="status" aria-live="polite">
+            <span id="statusDot" class="dot" aria-hidden="true"></span>
+            <span id="statusIcon" class="status-icon" title="Mencoba lagi…" aria-hidden="true">
+              <svg class="icon-spinner" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true">
+                <path d="M12 2a10 10 0 0 1 10 10"/>
+              </svg>
+              <span class="live-dot"></span>
+              <span class="ping-ring"></span>
+              <span class="ping-ring two"></span>
+            </span>
+            <span id="statusLabel">menghubungkan…</span>
+          </div>
+          <div class="avatar" aria-hidden="true"></div>
+        </div>
+      </header>
+
+      <div class="workspace" id="workspace">
+        <div id="threadWrap" class="thread-wrap">
+          <div class="workspace-toolbar" id="workspaceToolbar">
+            <div class="view-tabs" role="tablist" aria-label="Panel kanan">
+              <button type="button" class="view-tab panel-toggle" data-panel="files" aria-pressed="false" title="Buka/tutup panel Files">Files</button>
+              <button type="button" class="view-tab panel-toggle" data-panel="terminal" aria-pressed="false" title="Buka/tutup panel Terminal">Terminal</button>
+              <button type="button" class="view-tab panel-toggle" data-panel="browser" aria-pressed="false" title="Buka/tutup panel Browser">Browser</button>
+            </div>
+            <label class="agent-toggle" title="Aktifkan mode agent (AI dapat memakai tools: files/terminal)"><input type="checkbox" id="agentMode"> <span>agent</span></label>
+          </div>
+          <!-- Layar sambutan -->
+          <div id="welcome" class="welcome">
+            <div class="welcome-inner">
+              <div class="welcome-robot" aria-hidden="true">
+                <div class="welcome-robot-avatar"><svg class="robot-ico" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="5" y="7" width="14" height="11" rx="3" fill="currentColor" fill-opacity=".18" stroke="currentColor" stroke-width="1.7"/><path d="M12 4v3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><circle cx="12" cy="3.2" r="1.1" fill="currentColor"/><circle cx="9" cy="12" r="1.3" fill="currentColor"/><circle cx="15" cy="12" r="1.3" fill="currentColor"/><path d="M9 15.2c.8.8 1.8 1.2 3 1.2s2.2-.4 3-1.2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M4 11v3M20 11v3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></div>
+                <div class="welcome-robot-bubble">Saya Marbel Bot, siap membantu menjawab dan memberi rekomendasi.</div>
+              </div>
+              <h2 class="welcome-title" id="welcomeTitle">
+                <span class="grad">Halo,</span><br>
+                <span class="dim">Apa yang ingin Anda buat hari ini?</span>
+              </h2>
+              <p class="welcome-sub" id="welcomeSub">Chat, buat gambar, atau ilustrasi video. Buka <strong>Files</strong>, <strong>Terminal</strong>, atau <strong>Browser</strong> dari toolbar untuk workspace side-by-side.</p>
+
+              <div class="media-suggest" id="welcomeSuggest" role="list" aria-label="Contoh prompt"></div>
+            </div>
+          </div>
+
+          <!-- Area chat -->
+          <div id="messages" class="messages" role="log" aria-live="polite" aria-relevant="additions text" aria-label="Percakapan dengan Marbel AI"></div>
+          <div id="activeBadge" class="active-badge" role="status" aria-live="polite">
+            <span class="spark-ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M12 2l1.9 5.7a2 2 0 0 0 1.3 1.3L21 11l-5.8 1.9a2 2 0 0 0-1.3 1.3L12 20l-1.9-5.8a2 2 0 0 0-1.3-1.3L3 11l5.8-2a2 2 0 0 0 1.3-1.3L12 2z"/></svg>
+            </span>
+            <span class="typing" aria-hidden="true"><span></span><span></span><span></span></span>
+            <span class="active-text">Marbel AI sedang menulis jawaban…</span>
+          </div>
+        </div>
+
+        <!-- Files panel -->
+        <aside id="filesPanel" class="tool-panel files-panel right-panel" aria-label="Files workspace" aria-hidden="true">
+          <div class="tool-panel-head">
+            <div class="tool-panel-title">Workspace Files</div>
+            <div class="tool-panel-actions">
+              <button type="button" id="filesRefresh" class="canvas-btn">Refresh</button>
+              <button type="button" id="fileSave" class="canvas-btn">Save</button>
+              <button type="button" id="filesClose" class="canvas-btn canvas-btn-icon" title="Tutup Files" aria-label="Tutup Files">✕</button>
+            </div>
+          </div>
+          <div class="files-layout">
+            <div class="files-tree-wrap">
+              <div id="filesPath" class="files-path">.</div>
+              <ul id="filesTree" class="files-tree"></ul>
+            </div>
+            <div class="files-editor-wrap">
+              <div class="file-editor-head">
+                <div id="fileName" class="file-name">Pilih file untuk dibuka</div>
+                <div id="fileStatus" class="file-status" aria-live="polite"></div>
+              </div>
+              <textarea id="fileEditor" class="canvas-editor file-editor" spellcheck="false" placeholder="Pilih file dari panel kiri untuk melihat dan mengedit isinya..."></textarea>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Terminal panel -->
+        <aside id="terminalPanel" class="tool-panel terminal-panel right-panel" aria-label="Terminal" aria-hidden="true">
+          <div class="tool-panel-head">
+            <div class="tool-panel-title">Terminal</div>
+            <div class="tool-panel-actions">
+              <button type="button" id="terminalClear" class="canvas-btn">Clear</button>
+              <button type="button" id="terminalClose" class="canvas-btn canvas-btn-icon" title="Tutup Terminal" aria-label="Tutup Terminal">✕</button>
+            </div>
+          </div>
+          <pre id="terminalOutput" class="terminal-output" aria-live="polite"></pre>
+          <form id="terminalForm" class="terminal-form">
+            <span class="terminal-prompt">$</span>
+            <input id="terminalInput" class="terminal-input" type="text" placeholder="Jalankan perintah (contoh: dir, node -v, npm run dev)..." autocomplete="off" spellcheck="false" />
+            <button type="submit" id="terminalRun" class="canvas-btn">Run</button>
+          </form>
+        </aside>
+
+        <!-- Browser panel -->
+        <aside id="browserPanel" class="tool-panel browser-panel right-panel" aria-label="Browser" aria-hidden="true">
+          <div class="tool-panel-head">
+            <div class="tool-panel-title">Browser</div>
+            <div class="tool-panel-actions">
+              <button type="button" id="browserBack" class="canvas-btn" title="Back">←</button>
+              <button type="button" id="browserRefresh" class="canvas-btn" title="Refresh">↻</button>
+              <button type="button" id="browserClose" class="canvas-btn canvas-btn-icon" title="Tutup Browser" aria-label="Tutup Browser">✕</button>
+            </div>
+          </div>
+          <form id="browserForm" class="browser-bar">
+            <input id="browserUrl" class="browser-url" type="text" inputmode="url" placeholder="http://localhost:3000 atau https://example.com" aria-label="URL" />
+            <button type="submit" class="canvas-btn">Go</button>
+            <button type="button" id="browserOpenExternal" class="canvas-btn" title="Buka di tab baru">Open</button>
+          </form>
+          <div class="browser-frame-wrap">
+            <div id="browserEmpty" class="browser-empty">Masukkan URL lalu tekan Go. Berguna untuk preview dev server lokal. Beberapa situs memblokir tampilan di iframe.</div>
+            <iframe id="browserFrame" class="browser-frame" title="Embedded browser" sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-modals"></iframe>
+          </div>
+        </aside>
+
+        <!-- Canvas: panel dokumen/kode -->
+        <aside id="canvasPanel" class="canvas-panel" aria-label="Canvas" aria-hidden="true">
+          <div class="canvas-head">
+            <div class="canvas-head-left">
+              <span class="canvas-icon" aria-hidden="true">▣</span>
+              <div class="canvas-meta">
+                <div id="canvasTitle" class="canvas-title">Canvas</div>
+                <div id="canvasLang" class="canvas-lang">dokumen</div>
+              </div>
+            </div>
+            <div class="canvas-actions">
+              <button type="button" id="canvasPreviewToggle" class="canvas-btn" title="Preview" aria-pressed="false">Preview</button>
+              <button type="button" id="canvasCopy" class="canvas-btn" title="Salin isi">Salin</button>
+              <button type="button" id="canvasDownload" class="canvas-btn" title="Unduh file">Unduh</button>
+              <button type="button" id="canvasClose" class="canvas-btn canvas-btn-icon" title="Tutup canvas" aria-label="Tutup canvas">✕</button>
+            </div>
+          </div>
+          <div class="canvas-body">
+            <div class="canvas-tabs" role="tablist" aria-label="Mode canvas">
+              <button type="button" id="canvasTabEditor" class="canvas-tab active" data-view="editor" role="tab" aria-selected="true">Editor</button>
+              <button type="button" id="canvasTabPreview" class="canvas-tab" data-view="preview" role="tab" aria-selected="false">Preview</button>
+            </div>
+            <div class="canvas-split">
+              <div class="canvas-pane editor-pane active" id="canvasEditorPane">
+                <textarea id="canvasEditor" class="canvas-editor" spellcheck="false" aria-label="Editor canvas"></textarea>
+              </div>
+              <div class="canvas-pane preview-pane active" id="canvasPreviewPane" aria-hidden="false">
+                <div class="preview-toolbar">
+                  <span id="previewStatus" class="preview-status">Preview HTML/CSS/JS</span>
+                  <button type="button" id="canvasRefreshPreview" class="canvas-btn" title="Refresh preview">Refresh</button>
+                </div>
+                <iframe id="canvasPreviewFrame" class="canvas-preview-frame" title="Browser preview" sandbox="allow-scripts allow-forms allow-modals allow-same-origin allow-popups"></iframe>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <!-- ============ Composer ============ -->
+      <form id="form" class="composer" autocomplete="off">
+        <div class="composer-bar">
+          <textarea id="input" rows="1" placeholder="Tanya apa saja ke Marbel AI… (Enter kirim, Shift+Enter baris baru)" aria-label="Pesan"></textarea>
+          <button id="send" type="submit" class="send" title="Kirim pesan (Enter)" aria-label="Kirim pesan" disabled>
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+          </button>
+        </div>
+
+        <div class="composer-footer">
+          <div class="cf-left">
+            <button type="button" id="mediaImage" class="media-btn" data-mode="image" title="Buat gambar dari teks" aria-label="Mode gambar: buat gambar dari teks" aria-pressed="false">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.6"/><path d="M20 15l-5-5-8 8"/></svg>
+              <span>Gambar</span>
+            </button>
+            <button type="button" id="mediaVideo" class="media-btn" data-mode="video" title="Buat ilustrasi video dari teks" aria-label="Mode video: buat ilustrasi video dari teks" aria-pressed="false">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5" width="14" height="14" rx="3"/><path d="M16.5 10.5l5-3v9l-5-3z"/></svg>
+              <span>Video</span>
+            </button>
+          </div>
+          <div class="cf-actions">
+            <label class="custom-select">
+              <span class="cs-label">Model</span>
+              <select id="model" aria-label="Pilih model">
+                <option value="semua" selected>Auto Model (Tercepat)</option>
+                <option value="qwen3.8-27b">qwen3.8-27b</option>
+                <option value="gpt-oss-20b">gpt-oss-20b</option>
+                <option value="qwen3-8b">qwen3-8b</option>
+                <option value="mistral">mistral</option>
+                <option value="llama">llama</option>
+                <option value="gemma">gemma</option>
+                <option value="deepseek">deepseek</option>
+              </select>
+            </label>
+          </div>
+        </div>
+
+        <p class="privacy">MarbelAI v2.1 • Privacy Mode Active</p>
+      </form>
+    </main>
+  </div>
+
+  <div id="settingsOverlay" class="settings-overlay" aria-hidden="true">
+    <div id="settingsModal" class="settings-modal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+      <div class="settings-head">
+        <div>
+          <h2 id="settingsTitle" class="settings-title">Pengaturan</h2>
+          <p class="settings-sub">Preferensi disimpan di browser ini.</p>
+        </div>
+        <button type="button" id="settingsClose" class="canvas-btn canvas-btn-icon" aria-label="Tutup pengaturan">✕</button>
+      </div>
+      <div class="settings-body">
+        <div class="settings-group">
+          <label class="settings-label" for="settingTheme">Tema</label>
+          <select id="settingTheme" class="settings-control">
+            <option value="dark">Gelap</option>
+            <option value="light">Terang</option>
+          </select>
+        </div>
+        <div class="settings-group">
+          <label class="settings-label" for="settingDefaultModel">Model default</label>
+          <select id="settingDefaultModel" class="settings-control">
+            <option value="semua">Auto Model (Tercepat)</option>
+            <option value="qwen3.8-27b">qwen3.8-27b</option>
+            <option value="gpt-oss-20b">gpt-oss-20b</option>
+            <option value="qwen3-8b">qwen3-8b</option>
+            <option value="mistral">mistral</option>
+            <option value="llama">llama</option>
+            <option value="gemma">gemma</option>
+            <option value="deepseek">deepseek</option>
+          </select>
+          <p class="settings-help">Dipakai saat aplikasi dimuat. Model percakapan tetap bisa diubah dari composer.</p>
+        </div>
+        <div class="settings-group">
+          <label class="settings-label" for="settingImageAspect">Rasio gambar/video</label>
+          <select id="settingImageAspect" class="settings-control">
+            <option value="1:1">1:1 (Persegi)</option>
+            <option value="16:9">16:9 (Landscape)</option>
+            <option value="9:16">9:16 (Portrait)</option>
+            <option value="4:3">4:3</option>
+            <option value="3:4">3:4</option>
+          </select>
+        </div>
+        <div class="settings-group">
+          <label class="settings-label" for="settingImageModel">Model gambar & ilustrasi video</label>
+          <select id="settingImageModel" class="settings-control">
+            <option value="auto">Auto (a0.dev)</option>
+            <option value="a0">a0.dev</option>
+          </select>
+          <p class="settings-help">Dipakai untuk mode Gambar dan Ilustrasi Video (generator: a0.dev).</p>
+        </div>
+        <div class="settings-group settings-check">
+          <label class="settings-check-label">
+            <input type="checkbox" id="settingEnhancePrompts" />
+            <span>Optimalkan prompt gambar agar lebih akurat</span>
+          </label>
+          <p class="settings-help">Menambahkan panduan detail/kejelasan pada prompt gambar & ilustrasi video.</p>
+        </div>
+        <div class="settings-group">
+          <label class="settings-label" for="settingEnterSend">Perilaku Enter</label>
+          <select id="settingEnterSend" class="settings-control">
+            <option value="send">Enter untuk kirim</option>
+            <option value="newline">Enter untuk baris baru (Ctrl/Cmd+Enter kirim)</option>
+          </select>
+        </div>
+      </div>
+      <div class="settings-foot">
+        <button type="button" id="settingsReset" class="canvas-btn">Reset</button>
+        <div class="settings-foot-actions">
+          <button type="button" id="settingsCancel" class="canvas-btn">Batal</button>
+          <button type="button" id="settingsSave" class="canvas-btn ok">Simpan</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
