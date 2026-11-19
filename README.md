@@ -4,7 +4,7 @@
 
 # Marbel AI v2.1
 
-**Ruang kerja AI gratis — chat, buat gambar, dan ilustrasi video.**  
+**Ruang kerja AI gratis - chat, buat gambar, dan ilustrasi video.**  
 Ringan, tanpa akun, tanpa API key wajib.
 
 [![Demo](https://img.shields.io/badge/Demo-GitHub%20Pages-4285f4?style=for-the-badge&logo=githubpages&logoColor=white)](https://antono4.github.io/MarbelAIv2.1/)
@@ -19,11 +19,11 @@ Ringan, tanpa akun, tanpa API key wajib.
 
 Marbel AI v2.1 adalah aplikasi web AI (frontend statis + backend Node.js opsional) untuk:
 - **Chat AI multi-model gratis** (auto/failover, retry penanganan rate-limit)
-- **Pembuatan gambar** dan **ilustrasi video** (gambar animasi Ken Burns) dengan banyak opsi model/provider dan fallback otomatis
+- **Pembuatan gambar** dan **ilustrasi video** (gambar animasi Ken Burns) via **a0.dev**
 - **Workspace tools**: panel **Files**, **Terminal**, **Browser**, **Agent**, dan **Canvas/Preview**
 - **Pengaturan lokal** (tema, model default, rasio & model gambar, perilaku Enter, optimasi prompt)
 
-> **Catatan:** model/provider yang digunakan adalah layanan gratis pihak ketiga. Ketersediaan, kecepatan, dan kuota (rate limit/daily limit) dapat berubah sewaktu-waktu. Beberapa tangkapan layar di bawah bersifat ilustratif dan dapat sedikit berbeda dari UI versi terbaru.
+> **Catatan:** model/provider yang digunakan adalah layanan gratis pihak ketiga. Ketersediaan, kecepatan, dan kuota (rate limit/daily limit) dapat berubah sewaktu-waktu. Tangkapan layar bersifat ilustratif dan dapat berbeda dari UI versi terbaru.
 
 ---
 
@@ -70,21 +70,18 @@ flowchart LR
   S --> T[/api/terminal/exec/]
 ```
 
-### Alur pembuatan gambar/ilustrasi (cepat + fallback)
+### Alur pembuatan gambar/ilustrasi
 
 ```mermaid
 flowchart TD
   A[Prompt pengguna\nmode Gambar/Video] --> B{Perlu terjemahan ID→EN?}
   B -->|Ya, timeout singkat| C[Prompt siap]
   B -->|Tidak / fallback| C
-  C --> D[Pilih model/platform\nAuto atau spesifik]
-  D --> E[Bangun daftar kandidat URL\nmulti-provider/model + seed]
-  E --> F[Muat kandidat 1 + preload paralel kandidat lain]
-  F --> G{Ada yang berhasil?}
-  G -->|Ya, tercepat menang| H[Tampilkan gambar/ilustrasi]
-  G -->|Error/timeout| I[Coba kandidat berikutnya\nretry & race]
-  I --> G
-  I -->|Semua gagal| J[Tampilkan error + tombol Coba lagi]
+  C --> D[Bangun URL a0.dev\nprompt + rasio + seed]
+  D --> E[Muat gambar]
+  E --> F{Berhasil?}
+  F -->|Ya| G[Tampilkan gambar/ilustrasi]
+  F -->|Error/timeout| H[Tampilkan error + tombol Coba lagi]
 ```
 
 ---
@@ -101,11 +98,11 @@ flowchart TD
 ### Gambar & Ilustrasi Video
 - **Mode Gambar**: generate gambar dari teks (prompt Indonesia didukung; ada opsi terjemahan/optimasi prompt)
 - **Mode Video**: menghasilkan **ilustrasi animasi (Ken Burns)** dari gambar (bukan text-to-video AI murni)
-- **Multi-provider/model + fallback & balapan paralel** untuk mempercepat dan meningkatkan peluang sukses
+- **Generator**: `a0.dev` (satu provider)
 - **Opsi model gambar** (via **Pengaturan** atau **dropdown Model saat mode Gambar/Video aktif**):
   - `Auto (a0.dev)`
   - `a0.dev`
-- **Tombol “Coba lagi”** membuat seed/kandidat baru
+- **Tombol “Coba lagi”** membuat seed baru (URL baru)
 
 ### Workspace & Produktivitas
 - **Canvas/Preview**: editor + preview HTML/CSS/JS (iframe `srcdoc`, sandbox)
@@ -145,9 +142,10 @@ Buka: **http://localhost:12000**
 | `/` | GET | UI statis |
 | `/api/models` | GET | Daftar model chat yang tersedia |
 | `/api/chat` | POST | Proxy chat OpenAI-compatible (failover & retry 429) |
+| `/api/workspace/info` | GET | Info workspace root/path aktif |
 | `/api/workspace/tree?path=.` | GET | Daftar isi direktori workspace |
 | `/api/workspace/file?path=...` | GET | Baca file workspace |
-| `/api/workspace/file` | POST | Tulis/simpan file workspace (sesuai implementasi) |
+| `/api/workspace/file` | POST | Tulis/simpan file workspace |
 | `/api/terminal/exec` | POST | Eksekusi perintah di workspace |
 
 ---
@@ -174,8 +172,8 @@ Env opsional: `PORT`, `WORKSPACE_ROOT`, `UPSTREAM`, `UPSTREAM_PREFIX`, `DEFAULT_
 | Gejala | Penyebab umum | Solusi |
 |---|---|---|
 | `Backend: Failed to fetch` | Server lokal tidak berjalan / salah origin | Jalankan `node server.js`, buka `http://localhost:12000`, refresh |
-| `429` / `FREE_LIMIT` / `Daily limit reached` | Rate limit/kuota provider gratis habis | Tunggu & coba lagi, ganti model (Auto/model lain), gunakan server lokal; retry/failover aktif tapi kuota harian tidak bisa dihilangkan |
-| Gambar/ilustrasi gagal atau lambat | Provider gambar sibuk/limit/berubah | Klik **Coba lagi**, pilih **Auto/Turbo**, kurangi beban prompt; sistem fallback/race ke kandidat lain |
+| `429` / `FREE_LIMIT` / `Daily limit reached` | Rate limit/kuota provider gratis habis | Tunggu & coba lagi, ganti model chat (Auto/model lain), gunakan server lokal; retry/failover aktif tapi kuota harian tidak bisa dihilangkan |
+| Gambar/ilustrasi gagal atau lambat | Provider gambar sibuk/limit/berubah | Klik **Coba lagi**, pastikan koneksi stabil, kurangi/ubah prompt; generator saat ini hanya `a0.dev` |
 | Preview HTML di Canvas blank | Masalah render iframe/sandbox/cache | Hard refresh (`Ctrl+F5`), gunakan Canvas Preview |
 | Tombol kirim tidak aktif | Input kosong / sedang memproses / cache JS lama | Ketik pesan, tunggu selesai, hard refresh; cek Console bila perlu |
 | Fitur Files/Terminal tidak jalan | Dibuka tanpa backend server lokal | Akses via `http://localhost:12000` (mode backend) |
@@ -185,9 +183,9 @@ Env opsional: `PORT`, `WORKSPACE_ROOT`, `UPSTREAM`, `UPSTREAM_PREFIX`, `DEFAULT_
 ## Deployment
 
 - **GitHub Pages**: UI statis dapat berjalan dalam mode direct (CORS) untuk chat/gambar sesuai ketersediaan provider; fitur workspace/terminal membutuhkan backend.
-- **Docker / Render / Railway / VPS**: jalankan `server.js` (atur `PORT`, `UPSTREAM`, dll. sesuai kebutuhan).
+- **Hosting Node (Render/Railway/VPS/dll.)**: jalankan `server.js` (atur `PORT`, `UPSTREAM`, `WORKSPACE_ROOT`, dll. sesuai kebutuhan).
 
-Lihat juga: `Dockerfile`, `render.yaml`, `railway.json`, `build-apk.sh`, `android/`.
+> File deployment tambahan (`Dockerfile`, `render.yaml`, `railway.json`, `build-apk.sh`, `android/`) tidak disertakan di salinan ini.
 
 ---
 

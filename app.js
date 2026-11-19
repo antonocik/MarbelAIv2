@@ -1045,8 +1045,8 @@ function directChat(messages, model) {
   const tryFrom = function (idx) {
     const base = DIRECT_UPSTREAMS[idx];
     if (!base) {
-      const joined = '(' + baseError.join(' · ') + ')' || 'Semua upstream gagal.';
-      return Promise.reject(new Error('Langsung: ' + joined));
+      const joined = baseError.join(' | ') || 'Semua upstream gagal.';
+      return Promise.reject(new Error(joined));
     }
     const url = directChatUrl(base);
     const upModel = (DIRECT_MODEL_MAP[base] && DIRECT_MODEL_MAP[base][model]) || model;
@@ -1099,7 +1099,7 @@ function directChat(messages, model) {
       });
     };
     return attempt(0).catch(function (err) {
-      baseError.push(base + ' → ' + err.message);
+      baseError.push(base + ' -> ' + err.message);
       // jeda singkat sebelum pindah upstream untuk menghindari 1 req/s global
       return sleep(700).then(function () { return tryFrom(idx + 1); });
     });
@@ -1622,8 +1622,10 @@ function runOneModel(modelId, messages) {
       typing.remove();
       const msg = String(err && err.message || err || '');
       let friendly = 'Terjadi kesalahan saat menghubungi server.\nDetail: ' + msg + '\n\nSilakan coba lagi.';
-      if (/429|daily limit|rate limit|quota|too many requests|FREE_LIMIT/i.test(msg)) {
-        friendly = 'Batas penggunaan server/model tercapai (rate limit/quota).\nDetail: ' + msg + '\n\nSaran: tunggu beberapa saat lalu coba lagi, pilih model lain, atau gunakan server lokal Marbel AI (node server.js) agar request lewat backend. Fitur pembuatan gambar tetap bisa dicoba secara terpisah.';
+      if (/401|403|public beta|api key|registration is closed|unauthorized|forbidden/i.test(msg)) {
+        friendly = 'Layanan chat upstream saat ini tidak tersedia (butuh API key/akses ditutup) atau ditolak.\nDetail: ' + msg + '\n\nSaran: coba lagi nanti, ganti model, atau jalankan server lokal (`node server.js`) dengan upstream/API key sendiri via env (`UPSTREAM`, `API_KEY`). Fitur pembuatan gambar tetap bisa dicoba terpisah.';
+      } else if (/402|429|daily limit|rate limit|quota|too many requests|FREE_LIMIT|insufficient|token/i.test(msg)) {
+        friendly = 'Batas penggunaan/kuota server atau model tercapai.\nDetail: ' + msg + '\n\nSaran: tunggu beberapa saat lalu coba lagi, ganti model, atau gunakan server lokal Marbel AI (`node server.js`) dengan upstream/API key sendiri. Fitur pembuatan gambar tetap bisa dicoba terpisah.';
       } else if (/timeout|waktu tunggu habis|timed out/i.test(msg)) {
         friendly = 'Permintaan memakan waktu terlalu lama.\nDetail: ' + msg + '\n\nSilakan coba lagi. Jika membuat gambar, gunakan prompt lebih singkat atau nonaktifkan optimasi prompt di Pengaturan.';
       }
@@ -1636,7 +1638,7 @@ function runOneModel(modelId, messages) {
       errEl.actions.style.display = 'none';
 
       setStatus('err', 'gagal');
-      showToast(/429|daily limit|rate limit/i.test(msg) ? 'Batas penggunaan tercapai' : 'Gagal mengirim pesan');
+      showToast(/401|403|402|429|daily limit|rate limit|quota|token/i.test(msg) ? 'Layanan/kuota tidak tersedia' : 'Gagal mengirim pesan');
     } finally {
       busy = false;
       activeBadge.classList.remove('show');
