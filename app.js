@@ -990,16 +990,19 @@ const FREE_MODELS = [
 // Konfigurasi model upstream (dipakai pada mode langsung, mis. GitHub Pages/file).
 // Provider CORS yang dipakai langsung dari browser tanpa backend proxy:
 //  - uncloseai (hermes.ai.unturf.com, qwen.ai.unturf.com) - CORS '*' aktif.
+//  - Pollinations (text.pollinations.ai) - CORS '*', OpenAI-compatible (/openai).
 //  - Free.ai (api.free.ai) - CORS origin dicerminkan, hanya model self-hosted.
 // Model UI dipetakan ke nama model yang dikenal tiap upstream (mirip UPSTREAM_MODEL_MAP server).
 const DIRECT_UPSTREAMS = [
   'https://hermes.ai.unturf.com',
   'https://qwen.ai.unturf.com',
+  'https://text.pollinations.ai',
   'https://api.free.ai',
 ];
 const DIRECT_PAYLOAD = {
   'https://hermes.ai.unturf.com': { chat_template_kwargs: { enable_thinking: false } },
   'https://qwen.ai.unturf.com': { chat_template_kwargs: { enable_thinking: false } },
+  'https://text.pollinations.ai': {},
   'https://api.free.ai': {},
 };
 // uncloseai kini hanya melayani satu model: turboderp/Qwen3.8-27B-exl3.
@@ -1024,6 +1027,15 @@ const DIRECT_MODEL_MAP = {
     'gemma': UNCLOSEAI_MODEL,
     'deepseek': UNCLOSEAI_MODEL,
   },
+  'https://text.pollinations.ai': {
+    'qwen3.8-27b': 'openai',
+    'gpt-oss-20b': 'openai',
+    'qwen3-8b': 'openai',
+    'mistral': 'openai',
+    'llama': 'openai',
+    'gemma': 'openai',
+    'deepseek': 'openai',
+  },
   'https://api.free.ai': {
     'qwen3.8-27b': 'qwen7b',
     'gpt-oss-20b': 'qwen7b',
@@ -1036,6 +1048,7 @@ const DIRECT_MODEL_MAP = {
 };
 function directChatUrl(base) {
   const b = base.replace(/\/$/, '');
+  if (b === 'https://text.pollinations.ai') return b + '/openai';
   return b + '/v1/chat/completions';
 }
 function directChat(messages, model) {

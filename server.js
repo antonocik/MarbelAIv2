@@ -8,11 +8,12 @@ const PORT = Number(process.env.PORT) || 12000;
 const WORKSPACE_ROOT = path.resolve(process.env.WORKSPACE_ROOT || process.cwd());
 // Upstream OpenAI-compatible - model gratis dari daftar no-cost-ai
 // (https://github.com/zebbern/no-cost-ai), tanpa API key:
-//  1. uncloseai  (hermes.ai.unturf.com + qwen.ai.unturf.com) - Qwen 3.8 27B, bebas biaya.
-//  2. freeapi    (api.free.ai) - model open-weight gratis.
+//  1. uncloseai    (hermes.ai.unturf.com + qwen.ai.unturf.com) - Qwen 3.8 27B, bebas biaya.
+//  2. pollinations (text.pollinations.ai) - model gratis, OpenAI-compatible (/openai).
+//  3. freeapi      (api.free.ai) - model open-weight gratis.
 // Catatan: OpenCode Zen dibuang karena free tier-nya kini menolak pemakaian di
 // luar klien OpenCode ("can only be used from within OpenCode").
-const UPSTREAM = process.env.UPSTREAM || 'https://hermes.ai.unturf.com,https://qwen.ai.unturf.com,https://api.free.ai';
+const UPSTREAM = process.env.UPSTREAM || 'https://hermes.ai.unturf.com,https://qwen.ai.unturf.com,https://text.pollinations.ai,https://api.free.ai';
 // Pemetaan model per upstream: saat failover tiba di upstream berikutnya,
 // model yang tak dikenal di sana dipetakan ke model yang tersedia.
 // Gunanya: model UI (mis. qwen3.8-27b) tidak ada di provider lain — peta ke
@@ -38,6 +39,15 @@ const UPSTREAM_MODEL_MAP = {
     'gemma': UNCLOSEAI_MODEL,
     'deepseek': UNCLOSEAI_MODEL,
   },
+  'https://text.pollinations.ai': {
+    'qwen3.8-27b': 'openai',
+    'gpt-oss-20b': 'openai',
+    'qwen3-8b': 'openai',
+    'mistral': 'openai',
+    'llama': 'openai',
+    'gemma': 'openai',
+    'deepseek': 'openai',
+  },
   'https://api.free.ai': {
     'qwen3.8-27b': 'qwen7b',
     'gpt-oss-20b': 'qwen7b',
@@ -61,10 +71,12 @@ const UPSTREAM_PAYLOAD = {
 const UPSTREAM_PREFIX = process.env.UPSTREAM_PREFIX || '';
 function chatUrl(base) {
   const b = base.replace(/\/$/, '');
+  if (b === 'https://text.pollinations.ai') return b + '/openai';
   return b + UPSTREAM_PREFIX + '/v1/chat/completions';
 }
 function modelsUrl(base) {
   const b = base.replace(/\/$/, '');
+  if (b === 'https://text.pollinations.ai') return b + '/models';
   return b + UPSTREAM_PREFIX + '/v1/models';
 }
 // Daftar upstream cadangan, dipisah koma. Server mencoba berurutan: jika

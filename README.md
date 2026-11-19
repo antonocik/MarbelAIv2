@@ -60,11 +60,13 @@ flowchart LR
 
   S --> U1[hermes.ai.unturf.com]
   S --> U2[qwen.ai.unturf.com]
-  S --> U3[api.free.ai]
+  S --> U3[text.pollinations.ai]
+  S --> U4[api.free.ai]
 
   D --> U1
   D --> U2
   D --> U3
+  D --> U4
 
   S --> W[/api/workspace/*\nFiles read/write & tree/]
   S --> T[/api/terminal/exec/]
@@ -153,7 +155,7 @@ Buka: **http://localhost:12000**
 ## Model Chat & Upstream
 
 - **Model UI/chat**: `qwen3.8-27b`, `gpt-oss-20b`, `qwen3-8b`, `mistral`, `llama`, `gemma`, `deepseek`
-- **Upstream default (failover berurutan)**: `hermes.ai.unturf.com`, `qwen.ai.unturf.com`, `api.free.ai`
+- **Upstream default (failover berurutan)**: `hermes.ai.unturf.com`, `qwen.ai.unturf.com`, `text.pollinations.ai`, `api.free.ai`
 - Model UI dipetakan ke model yang dikenali tiap upstream (termasuk fallback aman)
 
 Env opsional: `PORT`, `WORKSPACE_ROOT`, `UPSTREAM`, `UPSTREAM_PREFIX`, `DEFAULT_MODEL`, `MODELS_LIST`, `API_KEY`, `ALLOW_ORIGIN`, `USE_SSE`, `FORCE_NO_STREAM`, `MODELS_TTL`, `DEBUG_LOG`.
